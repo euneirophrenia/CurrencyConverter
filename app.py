@@ -2,11 +2,23 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 
+import subprocess
+
 from datatools import *
 
 from dateutil import parser
 import re
+import schedule
 
+
+# Update the db daily, mimic a crond, you can replace this code setting up a crond in the system
+def update_db():
+    subprocess.call(["python3", "dbsetup.py", "--update"])
+
+
+schedule.every().day.at("17:00").do(update_db)
+
+# ----------------------------------------------------------------------------------------
 
 non_alpha = re.compile(r"[^a-z]", re.IGNORECASE)  # a regex to match any non-alpha char, compiled since it's used a lot
 

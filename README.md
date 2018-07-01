@@ -22,7 +22,13 @@ If something goes wrong, it returns both a proper HTTP error code (typically 400
 
 It is tested and developed with Python 3.4, using Flask 1.x and SQLite3.
 
-No further packages needed.
+It also needs the package `schedule` ([this one](https://github.com/dbader/schedule)), which can be installed with a simple
+```
+pip install schedule
+```
+
+to perform the periodic setup, as explained in the following.
+
 
 Data are retrieved from [the EU Central bank official site](https://www.ecb.europa.eu/stats/eurofxref/) and kept in a local DB.
 
@@ -38,12 +44,11 @@ To do so, the script (`dbsetup.py`) must be invoked like this:
 
 It can also be used to setup the db initially, invoking it with the `--create` option.
 
-> At this current point in time, `dbsetup.py` is **not** called automatically, must be set up "by hand", using either `crond` (on Unix systems) or more python code. In a near future I will set it up myself to run periodically.
-
+This script runs automatically once every day at 17:00.
 
 ## Future improvements
 - [ ] Optimize the code
-- [ ] Automatically run the DB update once a day
+- [x] Automatically run the DB update once a day
 - [ ] Create a local cache instead of querying the DB for every request
 - [ ] Better paths management
 
