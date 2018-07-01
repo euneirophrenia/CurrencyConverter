@@ -14,7 +14,7 @@ It returns a JSON file in the form
         "currency" : "<ISO_NAME>"
     }
 ```
-If something goes wrong it return both a proper HTTP error code (typically 400, for bad requests) and a JSON explaining some more details on what went wrong.
+If something goes wrong, it returns both a proper HTTP error code (typically 400, for bad requests) and a JSON explaining some more details on what went wrong.
 
 
 
@@ -45,7 +45,7 @@ It can also be used to setup the db initially, invoking it with the `--create` o
 - [ ] Optimize the code
 - [ ] Automatically run the DB update once a day
 - [ ] Create a local cache instead of querying the DB for every request
-
+- [ ] Better paths management
 
 ## Potential developments
 * Find out the most frequently used currencies and optimize the cache to keep their rates closer
