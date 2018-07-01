@@ -27,7 +27,10 @@ It also needs the package `schedule` ([this one](https://github.com/dbader/sched
 pip install schedule
 ```
 
-to perform the periodic setup, as explained in the following.
+to perform the periodic setup, as explained later in the following.
+
+> To run the server just exec `python app.py` in the main folder. Depending on your settings, `python` may point to Python2, in which case use `python3` instead.
+
 
 
 Data are retrieved from [the EU Central bank official site](https://www.ecb.europa.eu/stats/eurofxref/) and kept in a local DB.

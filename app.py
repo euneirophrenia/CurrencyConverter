@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 
 # Create or fetch a provider (DBRateProvider, but can be tweaked to use other providers)
-def get_db():
+def get_provider():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = DBRateProvider(DB_PATH)
@@ -86,7 +86,7 @@ def landing():
 @app.route('/convert')
 def endpoint():
 
-    provider = get_db()
+    provider = get_provider()
 
     params = {k : request.args.get(k, type=endpoint_params[k]) for k in endpoint_params.keys()}
 
