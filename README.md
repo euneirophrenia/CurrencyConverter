@@ -48,7 +48,6 @@ This script runs automatically once every day at 17:00.
 
 ## Future improvements
 - [ ] Optimize the code
-- [x] Automatically run the DB update once a day
 - [ ] Create a local cache instead of querying the DB for every request
 - [ ] Better paths management
 

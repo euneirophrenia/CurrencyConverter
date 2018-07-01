@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+from flask import g
 
 import subprocess
 
@@ -9,6 +10,8 @@ from datatools import *
 from dateutil import parser
 import re
 import schedule
+
+DB_PATH = './rates.db'
 
 
 # Update the db daily, mimic a crond, you can replace this code setting up a crond in the system
@@ -23,6 +26,14 @@ schedule.every().day.at("17:00").do(update_db)
 non_alpha = re.compile(r"[^a-z]", re.IGNORECASE)  # a regex to match any non-alpha char, compiled since it's used a lot
 
 app = Flask(__name__)
+
+
+# Create or fetch a provider (DBRateProvider, but can be tweaked to use other providers)
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = DBRateProvider(DB_PATH)
+    return db
 
 
 def currency_parser(string):
@@ -74,8 +85,8 @@ def landing():
 # Proper service endpoint, not really doing anything, just returns the expected JSON
 @app.route('/convert')
 def endpoint():
-    # DB Rate provider, created 1 for each request because it won't work across different processes..
-    provider = DBRateProvider('./rates.db')
+
+    provider = get_db()
 
     params = {k : request.args.get(k, type=endpoint_params[k]) for k in endpoint_params.keys()}
 
