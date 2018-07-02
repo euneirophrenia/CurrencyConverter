@@ -4,6 +4,7 @@ from flask import jsonify
 from flask import g
 
 import subprocess
+import json
 
 from datatools import *
 
@@ -11,28 +12,32 @@ from dateutil import parser
 import re
 import schedule
 
-DB_PATH = './rates.db'
+CUSTOM_SETTINGS_PATH = './custom_settings.json'
+
+with open(CUSTOM_SETTINGS_PATH) as f:
+    settings = json.load(f)
+
+
+app = Flask(__name__)
 
 
 # Update the db daily, mimic a crond, you can replace this code setting up a crond in the system
 def update_db():
-    subprocess.call(["python3", "dbsetup.py", "--update"])
+    subprocess.call(["python3", "dbsetup.py", "--update", "-s", g.XML_DAILY_SOURCE])
 
 
-schedule.every().day.at("17:00").do(update_db)
+schedule.every().day.at(settings["UPDATE_RUN_TIME"]).do(update_db)
 
 # ----------------------------------------------------------------------------------------
 
 non_alpha = re.compile(r"[^a-z]", re.IGNORECASE)  # a regex to match any non-alpha char, compiled since it's used a lot
-
-app = Flask(__name__)
 
 
 # Create or fetch a provider (DBRateProvider, but can be tweaked to use other providers)
 def get_provider():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = DBRateProvider(DB_PATH)
+        db = g._database = DBRateProvider(settings["DB_PATH"])
     return db
 
 
@@ -76,7 +81,7 @@ def handle_invalid_usage(error):
     return response
 
 
-# Main page, not important, may as well be discarded.
+# Main page, not important, may as well be discarded or set to show a usage tooltip
 @app.route('/')
 def landing():
     return 'Currency Converter'

@@ -80,11 +80,14 @@ raw_placeholder += "?)"
 
 # Find the oldest day and the latest day managed
 ref_date = connection.execute('select min(Date) from rates').fetchone()[0]
-end = connection.execute('select max(Date) from rates').fetchone()[0]
 
-# get either the max date in the db or today's date in update mode (on weekends, max date will be less then today)
+if not args.update:
+    end = connection.execute('select max(Date) from rates').fetchone()[0]
+
+# use today as end in update mode
 if args.update:
-    end = max(datetime.now().strftime('%Y-%m-%d'), end)
+    end = datetime.now().strftime('%Y-%m-%d')
+
 
 # Fill the gaps in between start date and end date
 while ref_date != end:

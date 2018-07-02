@@ -7,13 +7,6 @@ import sqlite3
 
 from errors import InvalidUsage
 
-_conn_ = sqlite3.connect('./rates.db')
-_cursor_ = _conn_.execute('select * from rates')
-
-# dynamically find the headers in the DB (not hard coded values)
-db_known_currencies = [description[0] for description in _cursor_.description][1:] #the first value is the date (ignored)
-_conn_.close()
-
 
 # Abstract base class for others
 class RateProvider:
@@ -83,6 +76,10 @@ class XMLRateProvider(RateProvider):
 
     def save(self, dbpath='./rates.db'):
         conn = sqlite3.connect(dbpath)
+        _cursor_ = conn.execute('select * from rates')
+
+        # dynamically find the headers in the DB (not hard coded values)
+        db_known_currencies = [description[0] for description in _cursor_.description][1:]  # the first value is the date (ignored)
 
         raw_placeholder = "("
         raw_placeholder += "?, " * (len(db_known_currencies))
@@ -114,11 +111,15 @@ class DBRateProvider(RateProvider):
 
     def __init__(self, src):
         self.connection = sqlite3.connect(src)
+        _cursor_ = self.connection.execute('select * from rates')
+
+        # dynamically find the headers in the DB (not hard coded values)
+        self.db_known_currencies = [description[0] for description in _cursor_.description][1:]  # the first value is the date (ignored)
 
     def get(self, src, dest, date):
-        if dest not in db_known_currencies:
+        if dest not in self.db_known_currencies:
             raise InvalidUsage("Unknown currency %s " % dest, 400)
-        if src not in db_known_currencies:
+        if src not in self.db_known_currencies:
             raise InvalidUsage("Uknown currency %s " % src, 400)
 
         # todo: cache results

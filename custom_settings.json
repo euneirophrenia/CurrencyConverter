@@ -1,0 +1,6 @@
+{
+  "DB_PATH" : "./rates.db",
+  "DB_SCHEMA" : "./dbschema.sql",
+  "XML_DAILY_SOURCE" : "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
+  "UPDATE_RUN_TIME" : "17:00"
+}
