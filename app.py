@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 # Update the db daily, mimic a crond, you can replace this code setting up a crond in the system
 def update_db():
-    subprocess.call(["python3", "dbsetup.py", "--update", "-s", g.XML_DAILY_SOURCE])
+    subprocess.call(["python3", "dbsetup.py", "--update", "-s", settings['XML_DAILY_SOURCE']])
 
 
 schedule.every().day.at(settings["UPDATE_RUN_TIME"]).do(update_db)
